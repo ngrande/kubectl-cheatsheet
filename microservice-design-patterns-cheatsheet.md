@@ -1,10 +1,12 @@
-# MicroService Design Patterns
+# Multi-Container Design Patterns
 
-Cheat sheet for the most used micro service patterns in the Kubernetes domain
+Cheat sheet for the most used micro service / multi-container patterns in the Kubernetes context
 
 ![Summary of all patterns](https://matthewpalmer.net/kubernetes-app-developer/multi-container-pod-design.png)
 
 ## Sidecar Pattern
+
+### Enhance or extend functionality of the main application
 
 A sidecar service is not necessarily part of the primary application but connects to it and augments the functionality.
 
@@ -18,6 +20,8 @@ An often used sidecar pattern usage is the extenstions of a logging mechanism to
 
 ## Ambassador Pattern
 
+### Proxy network connection between main application and external service
+
 An ambassador container resembles a special kind of [Sidecar](#sidecar-pattern) which handles requests and responses from the primary application (here the client) to an external service (outside this container).
 
 - Proxy from primary app (client) to external service
@@ -30,6 +34,8 @@ An ambassador container resembles a special kind of [Sidecar](#sidecar-pattern) 
 For example some extenral services might be dynamic in nature or expect a specific format or return a format not suitable for the primary application. In such a case the ambassador is responsible for serving the primary application as an easy-to-use and predictable endpoint proxy.
 
 ## Adapter Pattern
+
+### Transform output of the main application
 
 An adapter is also a special kind of [Sidecar](#sidecar-pattern) which is used for converting the main application exposed API to a format an external client expects. So it is like a reversed [Ambassador](#ambassador-pattern).
 

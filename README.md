@@ -6,8 +6,8 @@ A list of useful commands to be executed directly on the command line via `kubec
 
 [Cheat Sheet](kubectl-cheatsheet.md)
 
-## MicroService Patterns
+## Multi-Container Patterns
 
-A listing of the most used microservice container patterns.
+A listing of the most used multi-container patterns.
 
 [Cheat Sheet](microservice-design-patterns-cheatsheet.md)
