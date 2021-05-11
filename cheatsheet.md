@@ -2,6 +2,38 @@
 
 When running those commands you can always add the flags `--dry-run=client -o yaml` to only show the corresponding YAML notation.
 
+- [Cheat Sheet](#cheat-sheet)
+  - [Enable completion](#enable-completion)
+  - [Verb-driven commands](#verb-driven-commands)
+    - [Run](#run)
+    - [Expose](#expose)
+    - [Autoscale](#autoscale)
+  - [Object creation](#object-creation)
+    - [Pods](#pods)
+      - [YAML output](#yaml-output)
+    - [Deployment](#deployment)
+    - [Service](#service)
+  - [Edit objects](#edit-objects)
+  - [Listings](#listings)
+    - [List objects](#list-objects)
+      - [as YAML](#as-yaml)
+      - [Show labels](#show-labels)
+      - [Filter by labels](#filter-by-labels)
+    - [Labels](#labels)
+      - [Edit labels](#edit-labels)
+      - [Remove labels](#remove-labels)
+  - [Interact with pods](#interact-with-pods)
+  - [Deployments](#deployments)
+    - [Create a deployment](#create-a-deployment)
+    - [Update the deployment](#update-the-deployment)
+    - [Rollout history](#rollout-history)
+    - [Undo rollout](#undo-rollout)
+      - [Set to specific revision](#set-to-specific-revision)
+
+## Enable completion
+
+`source <(kubectl completion zsh)` or for bash `source <(kubectl completion bash)`
+
 ## Verb-driven commands
 
 ### Run
@@ -76,6 +108,13 @@ Create a service
 
 `kubectl create service clusterip --tcp 80 <name>`
 
+## Edit objects
+
+It is also possible to edit objects like pods, deployments, services, etc. - but not all fields can be edited while the object is still active.
+So sometimes it is required to recreate the object to make those changes.
+
+`kubectl edit pod nginx`
+
 ## Listings
 
 ### List objects
@@ -92,19 +131,70 @@ Create a service
 
 `kubectl get <deployments|namespaces|services|pods|...>`
 
+#### as YAML
+
+`kubectl get pod nginx -o yaml`
+
+or better
+
+`kubectl run --image nginx nginx --dry-run=client -o yaml`
 
 #### Show labels
 
 `kubectl get pods --show-labels`
 
-### Filter by labels
+#### Filter by labels
 
 `kubectl get pods -l app=nginx`
 
 `kubectl get pods -l 'app in (nginx, redis)'`
+
+### Labels
+
+#### Edit labels
+
+`kubectl label pod nginx release=nginx-123`
+
+#### Remove labels
+
+`kubectl label pod nginx release-`
 
 ## Interact with pods
 
 open a shell in a pod
 
 `kubectl exec -it busybox -- sh`
+
+or directly run a command
+
+`kubectl exec busybox -- wget nginx`
+
+## Deployments
+
+A deployment is an object on top of a `ReplicaSet` which includes such a `ReplicaSet` of `Pods` and also manages rollouts of new updates.
+
+### Create a deployment
+
+`kubectl create deployment nginx --image nginx --port 80 --replicas 5`
+
+### Update the deployment
+
+To update, simply edit the YAML or the object itself
+
+`kubectl edit deployment nginx`
+
+and the `Deployment` object will handle the update / `rollout` (green/blue update, so not all replicas will be updated at the same time but rather _n_ at a time)
+
+### Rollout history
+
+`kubectl rollout history deployment nginx`
+
+### Undo rollout
+
+`kubectl rollout undo deployment nginx`
+
+will set it back to one revision before the current
+
+#### Set to specific revision
+
+`kubectl rollout undo deployment nginx --to-revision=2`
