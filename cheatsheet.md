@@ -7,6 +7,9 @@ When running those commands you can always add the flags `--dry-run=client -o ya
   - [Verb-driven commands](#verb-driven-commands)
     - [Run](#run)
     - [Expose](#expose)
+      - [Create a deployment](#create-a-deployment)
+      - [Expose the deployment](#expose-the-deployment)
+      - [Test with busybox](#test-with-busybox)
     - [Autoscale](#autoscale)
   - [Object creation](#object-creation)
     - [Pods](#pods)
@@ -24,7 +27,7 @@ When running those commands you can always add the flags `--dry-run=client -o ya
       - [Remove labels](#remove-labels)
   - [Interact with pods](#interact-with-pods)
   - [Deployments](#deployments)
-    - [Create a deployment](#create-a-deployment)
+    - [Create a deployment](#create-a-deployment-1)
     - [Update the deployment](#update-the-deployment)
     - [Rollout history](#rollout-history)
     - [Undo rollout](#undo-rollout)
@@ -44,9 +47,32 @@ Run a particular image on the cluster
 
 ### Expose
 
-`kubectl expose pod <pod-name> --port <port>`
+`kubectl expose deployment <deployment-name> --port <port> --target-port <port>`
 
 Take a replication controller, service, deployment or pod and expose it as a new Kubernetes Service
+
+<details>
+<summary>Example</summary>
+
+#### Create a deployment
+
+`kubectl create deployment nginx --image nginx --port 80`
+
+#### Expose the deployment
+
+on port 8080
+
+`kubectl expose deployment nginx --port 8080 --target-port 80`
+
+#### Test with busybox
+
+`kubectl run --image busybox busybox --command sleep --command 300`
+
+and `wget` it
+
+`kubectl exec -it busybox -- wget nginx:8080`
+
+</details>
 
 ### Autoscale
 
