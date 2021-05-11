@@ -30,27 +30,19 @@ Create and run a pod
 
 without anything
 
-```shell
-kubectl run --image nginx <name>
-```
+`kubectl run --image nginx <name>`
 
 setting a command
 
-```shell
-kubectl run --image busybox <name> --command "sleep" --command "3600"
-```
+`kubectl run --image busybox <name> --command "sleep" --command "3600"`
 
 setting ports
 
-```shell
-kubectl run --image nginx <name> --port 80
-```
+`kubectl run --image nginx <name> --port 80`
 
 #### YAML output
 
-```shell
-kubectl run --image nginx <name> --port 80 -o yaml --dry-run=client
-```
+`kubectl run --image nginx <name> --port 80 -o yaml --dry-run=client`
 
 ```YAML
 apiVersion: v1
@@ -76,14 +68,43 @@ status: {}
 
 Create a deployment
 
-```shell
-kubectl create deployment --image=nginx --port 80 <name>
-```
+`kubectl create deployment --image=nginx --port 80 <name>`
 
 ### Service
 
 Create a service
 
+`kubectl create service clusterip --tcp 80 <name>`
+
+## Listings
+
+### List objects
+
+`kubectl get pods`
+
 ```shell
-kubectl create service clusterip --tcp 80 <name>
+  $ kubectl get pods
+  NAME                     READY   STATUS        RESTARTS   AGE
+  alpine                   1/1     Running       1          6m15s
+  busybox                  1/1     Running       1          95m
+  debian                   0/1     Terminating   0          2m52s
 ```
+
+`kubectl get <deployments|namespaces|services|pods|...>`
+
+
+#### Show labels
+
+`kubectl get pods --show-labels`
+
+### Filter by labels
+
+`kubectl get pods -l app=nginx`
+
+`kubectl get pods -l 'app in (nginx, redis)'`
+
+## Interact with pods
+
+open a shell in a pod
+
+`kubectl exec -it busybox -- sh`
