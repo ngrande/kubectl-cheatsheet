@@ -32,6 +32,7 @@ When running those commands you can always add the flags `--dry-run=client -o ya
     - [Rollout history](#rollout-history)
     - [Undo rollout](#undo-rollout)
       - [Set to specific revision](#set-to-specific-revision)
+  - [To Add](#to-add)
 
 ## Enable completion
 
@@ -70,7 +71,7 @@ on port 8080
 
 and `wget` it
 
-`kubectl exec -it busybox -- wget nginx:8080`
+`kubectl exec busybox -- wget nginx:8080`
 
 </details>
 
@@ -224,3 +225,16 @@ will set it back to one revision before the current
 #### Set to specific revision
 
 `kubectl rollout undo deployment nginx --to-revision=2`
+
+## To Add
+
+- PersistentVolume
+- PersistentVolumeClaims
+- Secrets
+- Environment Variables
+- ConfigMap
+- Job
+- CronJob
+- Ingress
+- namespace
+- serviceaccount
