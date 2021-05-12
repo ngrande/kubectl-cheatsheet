@@ -38,6 +38,9 @@ When running those commands you can always add the flags `--dry-run=client -o ya
     - [Claim Volume In Pod](#claim-volume-in-pod)
   - [Environment Variables](#environment-variables)
   - [Secrets](#secrets)
+    - [Using Secrets](#using-secrets)
+      - [Mount Secrets as a volume](#mount-secrets-as-a-volume)
+      - [Using Secrets as Environment Variables](#using-secrets-as-environment-variables)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -322,6 +325,8 @@ spec:
 
 ## Secrets
 
+[Kubernetes Doc](https://kubernetes.io/docs/concepts/configuration/secret/)
+
 `data` secrets have to be `base64` encoded like
 
 ```shell
@@ -334,15 +339,71 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: secret-dockercfg
-type: kubernetes.io/dockercfg
 data:
   my-key: "dGhpcyBpcyBteSBrZXk="
 ```
 
+or as simple strings with `stringData`
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-basic-auth
+stringData:
+  username: admin
+  password: t0p-Secret
+```
+
+### Using Secrets
+
+#### Mount Secrets as a volume
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: mypod
+    image: redis
+    volumeMounts:
+    - name: foo
+      mountPath: "/etc/foo"
+      readOnly: true
+  volumes:
+  - name: foo
+    secret:
+      secretName: secret-basic-auth
+```
+
+#### Using Secrets as Environment Variables
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-env-pod
+spec:
+  containers:
+  - name: mycontainer
+    image: redis
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: secret-basic-auth
+            key: username
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: secret-basic-auth
+            key: password
+```
+
 ## To Add
 
-- Secrets
-- Environment Variables
 - ConfigMap
 - Job
 - CronJob
