@@ -36,6 +36,8 @@ When running those commands you can always add the flags `--dry-run=client -o ya
     - [Persistent Volume](#persistent-volume)
     - [Persistent Volume Claim](#persistent-volume-claim)
     - [Claim Volume In Pod](#claim-volume-in-pod)
+  - [Environment Variables](#environment-variables)
+  - [Secrets](#secrets)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -202,6 +204,8 @@ or directly run a command
 
 ## Deployments
 
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+
 A deployment is an object on top of a `ReplicaSet` which includes such a `ReplicaSet` of `Pods` and also manages rollouts of new updates.
 
 ### Create a deployment
@@ -231,6 +235,8 @@ will set it back to one revision before the current
 `kubectl rollout undo deployment nginx --to-revision=2`
 
 ## Volumes
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/storage/)
 
 ### Persistent Volume
 
@@ -291,6 +297,46 @@ spec:
   - name: my-volume
     persistentVolumeClaim:
       claimName: my-pvc
+```
+
+## Environment Variables
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-env-var
+  labels:
+    release: env
+spec:
+  containers:
+  - name: env-var
+    image: busybox
+    command: ["sleep", "300"]
+    env:
+    - name: ENV_VAR_A
+      value: "Hello from the environment"
+    - name: ENV_VAR_B
+      value: "Such a sweet sorrow"
+```
+
+## Secrets
+
+`data` secrets have to be `base64` encoded like
+
+```shell
+$ echo -n "this is my key" | base64
+dGhpcyBpcyBteSBrZXk=
+```
+
+```YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-dockercfg
+type: kubernetes.io/dockercfg
+data:
+  my-key: "dGhpcyBpcyBteSBrZXk="
 ```
 
 ## To Add
