@@ -39,9 +39,11 @@ When running those commands you can always add the flags `--dry-run=client -o ya
   - [Environment Variables](#environment-variables)
   - [Secrets](#secrets)
     - [Using Secrets](#using-secrets)
-      - [Mount Secrets as a files](#mount-secrets-as-a-files)
+      - [Using Secrets as a file](#using-secrets-as-a-file)
       - [Using Secrets as Environment Variables](#using-secrets-as-environment-variables)
   - [ConfigMap](#configmap)
+    - [Using ConfigMap as Environment Variable](#using-configmap-as-environment-variable)
+    - [Using ConfigMap as a file](#using-configmap-as-a-file)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -368,7 +370,7 @@ stringData:
 
 ### Using Secrets
 
-#### Mount Secrets as a files
+#### Using Secrets as a file
 
 [Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
 
@@ -435,12 +437,59 @@ data:
     enemy.types=aliens,monsters
     player.maximum-lives=5  
 ```
-Add usage example
+
+### Using ConfigMap as Environment Variable
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod-env
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      env:
+        - name: NUM_PLAYERS
+          valueFrom:
+            configMapKeyRef:
+              name: configmap-demo
+              key: number_of_players
+```
+
+### Using ConfigMap as a file
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod-volume
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+        readOnly: true
+  volumes:
+    - name: config
+      configMap:
+        name: configmap-demo
+        items:
+        - key: "game.properties"
+          path: "game.properties"
+```
 
 ## To Add
 
 - Add Doc links to every section
-- ConfigMap
 - Job
 - CronJob
 - Ingress
