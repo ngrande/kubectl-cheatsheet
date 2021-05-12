@@ -32,6 +32,10 @@ When running those commands you can always add the flags `--dry-run=client -o ya
     - [Rollout history](#rollout-history)
     - [Undo rollout](#undo-rollout)
       - [Set to specific revision](#set-to-specific-revision)
+  - [Volumes](#volumes)
+    - [Persistent Volume](#persistent-volume)
+    - [Persistent Volume Claim](#persistent-volume-claim)
+    - [Claim Volume In Pod](#claim-volume-in-pod)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -226,10 +230,71 @@ will set it back to one revision before the current
 
 `kubectl rollout undo deployment nginx --to-revision=2`
 
+## Volumes
+
+### Persistent Volume
+
+Declare a `PersistentVolume` which provides several types of volumes (`AzureDisk`, `AzureFile`, `hostPath`, and more ...).
+This Volume is persistent and available in the whole cluster. Pods can access this storage (full or only use a part of it) by using a [PersistentVolumeClaim](#persistent-volume-claim)
+
+```YAML
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 2Gi 
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+```
+
+### Persistent Volume Claim
+
+In order for a `Pod` to actually use a `PersistentVolume` it first must be bound to a `PersistentVolumeClaim` - later this claim is referred to in the `Pod`.
+
+```YAML
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+```
+
+### Claim Volume In Pod
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  containers:
+  - name: myapp
+    image: busybox
+    command: ["sleep", "300"]
+    volumeMounts:
+      - mountPath: "/tmp/mnt"
+        name: my-volume
+  volumes:
+  - name: my-volume
+    persistentVolumeClaim:
+      claimName: my-pvc
+```
+
 ## To Add
 
-- PersistentVolume
-- PersistentVolumeClaims
 - Secrets
 - Environment Variables
 - ConfigMap
