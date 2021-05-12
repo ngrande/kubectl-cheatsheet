@@ -35,12 +35,13 @@ When running those commands you can always add the flags `--dry-run=client -o ya
   - [Volumes](#volumes)
     - [Persistent Volume](#persistent-volume)
     - [Persistent Volume Claim](#persistent-volume-claim)
-    - [Claim Volume In Pod](#claim-volume-in-pod)
+    - [Claim as Volumes](#claim-as-volumes)
   - [Environment Variables](#environment-variables)
   - [Secrets](#secrets)
     - [Using Secrets](#using-secrets)
-      - [Mount Secrets as a volume](#mount-secrets-as-a-volume)
+      - [Mount Secrets as a files](#mount-secrets-as-a-files)
       - [Using Secrets as Environment Variables](#using-secrets-as-environment-variables)
+  - [ConfigMap](#configmap)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -241,7 +242,11 @@ will set it back to one revision before the current
 
 [Kubernetes Docs](https://kubernetes.io/docs/concepts/storage/)
 
+> Kubernetes supports many types of volumes. A Pod can use any number of volume types simultaneously. Ephemeral volume types have a lifetime of a pod, but persistent volumes exist beyond the lifetime of a pod. When a pod ceases to exist, Kubernetes destroys ephemeral volumes; however, Kubernetes does not destroy persistent volumes. For any kind of volume in a given pod, data is preserved across container restarts.
+
 ### Persistent Volume
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes)
 
 Declare a `PersistentVolume` which provides several types of volumes (`AzureDisk`, `AzureFile`, `hostPath`, and more ...).
 This Volume is persistent and available in the whole cluster. Pods can access this storage (full or only use a part of it) by using a [PersistentVolumeClaim](#persistent-volume-claim)
@@ -263,6 +268,8 @@ spec:
 
 ### Persistent Volume Claim
 
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistentvolumeclaims)
+
 In order for a `Pod` to actually use a `PersistentVolume` it first must be bound to a `PersistentVolumeClaim` - later this claim is referred to in the `Pod`.
 
 ```YAML
@@ -279,7 +286,9 @@ spec:
       storage: 500Mi
 ```
 
-### Claim Volume In Pod
+### Claim as Volumes
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes)
 
 ```YAML
 apiVersion: v1
@@ -303,6 +312,8 @@ spec:
 ```
 
 ## Environment Variables
+
+[Kubernetes Docs](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/#define-an-environment-variable-for-a-container)
 
 ```YAML
 apiVersion: v1
@@ -357,7 +368,9 @@ stringData:
 
 ### Using Secrets
 
-#### Mount Secrets as a volume
+#### Mount Secrets as a files
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
 
 ```YAML
 apiVersion: v1
@@ -379,6 +392,8 @@ spec:
 ```
 
 #### Using Secrets as Environment Variables
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)
 
 ```YAML
 apiVersion: v1
@@ -402,8 +417,29 @@ spec:
             key: password
 ```
 
+## ConfigMap
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/configmap/)
+
+```YAML
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-demo
+data:
+  # property-like keys; each key maps to a simple value
+  number_of_players: "3"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5  
+```
+Add usage example
+
 ## To Add
 
+- Add Doc links to every section
 - ConfigMap
 - Job
 - CronJob
