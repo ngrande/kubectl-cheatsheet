@@ -1,6 +1,12 @@
 # Cheat Sheet
 
-When running those commands you can always add the flags `--dry-run=client -o yaml` to only show the corresponding YAML notation.
+Treat the following document as a quick-reference to get example `YAML` and `shell` commands for creating/executing different Kubernetes objects. For in-depth explanations click on the provided __Kubernetes Doc__ links.
+
+---
+
+When running `kubectl` commands you can always add the flags `--dry-run=client -o yaml` to only show the corresponding YAML notation.
+
+---
 
 - [Cheat Sheet](#cheat-sheet)
   - [Enable completion](#enable-completion)
