@@ -45,9 +45,8 @@ When running `kubectl` commands you can always add the flags `--dry-run=client -
     - [Claim as Volumes](#claim-as-volumes)
   - [Environment Variables](#environment-variables)
   - [Secrets](#secrets)
-    - [Using Secrets](#using-secrets)
-      - [Using Secrets as a file](#using-secrets-as-a-file)
-      - [Using Secrets as Environment Variables](#using-secrets-as-environment-variables)
+    - [Using Secrets as a file](#using-secrets-as-a-file)
+    - [Using Secrets as Environment Variables](#using-secrets-as-environment-variables)
   - [ConfigMap](#configmap)
     - [Using ConfigMap as Environment Variable](#using-configmap-as-environment-variable)
     - [Using ConfigMap as a file](#using-configmap-as-a-file)
@@ -387,9 +386,7 @@ stringData:
   password: t0p-Secret
 ```
 
-### Using Secrets
-
-#### Using Secrets as a file
+### Using Secrets as a file
 
 [Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-files-from-a-pod)
 
@@ -412,7 +409,7 @@ spec:
       secretName: secret-basic-auth
 ```
 
-#### Using Secrets as Environment Variables
+### Using Secrets as Environment Variables
 
 [Kubernetes Docs](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables)
 
