@@ -2,6 +2,8 @@
 
 Brief explanation of the concept of `Ingress` or `Ingress Controller` in Kubernetes.
 
+[Better explanation](https://thenewstack.io/kubernetes-ingress-for-beginners/)
+
 ## The Problem
 
 To export services from the cluster to the outside (public Internet) Kubernetes offers `services` with the type `NodePort` or `LoadBalancer`.
@@ -25,3 +27,28 @@ This solution is thus quite expensive and requires a Cloud environment to run in
 
 An `Ingress Controller` is a pod like any other pod in your cluster but service as a reverse proxy (HAProxy, Nginx) with layer 7 LoadBalancing capabilites.
 Since the `Ingress Controller` is only a pod in the cluster it has the same restrictions (walled in) and no direct access from the outside - So an `Ingress Controller` would again use either a `NodePort` or a `LoadBalancer` to expose itself but this time it is a single point of entry for all app routings in the whole cluster.
+
+## Example
+
+The `Ingress` manifest
+
+```YAML
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myingress
+  labels:
+      name: myingress
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx
+            port: 
+              number: 80
+```
+

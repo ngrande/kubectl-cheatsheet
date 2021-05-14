@@ -11,3 +11,9 @@ A list of useful commands to be executed directly on the command line via `kubec
 A listing of the most used multi-container patterns.
 
 [Cheat Sheet](microservice-design-patterns-cheatsheet.md)
+
+## Ingress
+
+Brief explanation of the concept of the `Ingress Controller`.
+
+[Document](Ingress.md)
