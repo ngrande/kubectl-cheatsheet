@@ -50,6 +50,7 @@ When running those commands you can always add the flags `--dry-run=client -o ya
   - [ServiceAccounts](#serviceaccounts)
     - [Create a ServiceAccount](#create-a-serviceaccount)
     - [Use a ServiceAccount](#use-a-serviceaccount)
+  - [StatefulSets](#statefulsets)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -579,9 +580,66 @@ spec:
     image: nginx
 ```
 
+## StatefulSets
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)
+
+> Manages the deployment and scaling of a set of Pods, and provides guarantees about the ordering and uniqueness of these Pods.
+
+Example with a `headless Service`
+
+```YAML
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None # headless
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  serviceName: "nginx"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local-storage"
+      resources:
+        requests:
+          storage: 1Gi
+```
+
 ## To Add
 
 - Add Doc links to every section
 - Ingress
 - DaemonSets
-- StatefulSets
