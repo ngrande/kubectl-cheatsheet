@@ -16,6 +16,7 @@ When running those commands you can always add the flags `--dry-run=client -o ya
       - [YAML output](#yaml-output)
     - [Deployment](#deployment)
     - [Service](#service)
+    - [Namespace](#namespace)
   - [Edit objects](#edit-objects)
   - [Listings](#listings)
     - [List objects](#list-objects)
@@ -44,6 +45,11 @@ When running those commands you can always add the flags `--dry-run=client -o ya
   - [ConfigMap](#configmap)
     - [Using ConfigMap as Environment Variable](#using-configmap-as-environment-variable)
     - [Using ConfigMap as a file](#using-configmap-as-a-file)
+  - [Job](#job)
+  - [CronJob](#cronjob)
+  - [ServiceAccounts](#serviceaccounts)
+    - [Create a ServiceAccount](#create-a-serviceaccount)
+    - [Use a ServiceAccount](#use-a-serviceaccount)
   - [To Add](#to-add)
 
 ## Enable completion
@@ -146,6 +152,12 @@ Create a deployment
 Create a service
 
 `kubectl create service clusterip --tcp 80 <name>`
+
+### Namespace
+
+Create a namespace
+
+`kubectl create namespace <namespace-name>`
 
 ## Edit objects
 
@@ -487,11 +499,89 @@ spec:
           path: "game.properties"
 ```
 
+## Job
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)
+
+> A Job creates one or more Pods and will continue to retry execution of the Pods until a specified number of them successfully terminate. As pods successfully complete, the Job tracks the successful completions. When a specified number of successful completions is reached, the task (ie, Job) is complete. Deleting a Job will clean up the Pods it created. Suspending a Job will delete its active Pods until the Job is resumed again.
+
+```YAML
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  backoffLimit: 4
+```
+
+## CronJob
+
+[Kubernetes Docs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+
+> One CronJob object is like one line of a crontab (cron table) file. It runs a [Job](#job) periodically on a given schedule, written in Cron format.
+
+```YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            command:
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure
+```
+
+## ServiceAccounts
+
+[Kubernetes Docs](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
+
+> A service account provides an identity for processes that run in a Pod.
+
+### Create a ServiceAccount
+
+```YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: build-robot
+```
+
+### Use a ServiceAccount
+
+Use the `ServiceAccount` in a `Pod`. Each `Pod` can use exactly one `ServiceAccount` (and _must_ be from the same `Namespace`).
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  serviceAccountName: build-bot
+  containers:
+  - name: nginx
+    image: nginx
+```
+
 ## To Add
 
 - Add Doc links to every section
-- Job
-- CronJob
 - Ingress
-- namespace
-- serviceaccount
+- DaemonSets
+- StatefulSets
